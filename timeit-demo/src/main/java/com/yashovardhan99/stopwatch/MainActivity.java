@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.yashovardhan99.timeit.OnTickListener;
 import com.yashovardhan99.timeit.Split;
 import com.yashovardhan99.timeit.Stopwatch;
 
@@ -29,7 +30,7 @@ import java.util.LinkedList;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, OnTickListener {
 
     TextView time, splitLog;
     Stopwatch stopwatch;
@@ -43,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         time = findViewById(R.id.time);
         stopwatch.setTextView(time);
         splitLog = findViewById(R.id.split_log);
+        stopwatch.setOnTickListener(this);
+        stopwatch.setClockDelay(50);
     }
 
     @Override
@@ -80,5 +83,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 splitLog.setText(stringBuilder.toString());
                 ((ScrollView)(findViewById(R.id.split_scroller))).fullScroll(View.FOCUS_DOWN);
         }
+    }
+
+    @Override
+    public void onTick(Stopwatch stopwatch) {
+        Log.d("MAINACTIVITYLISTENER", String.valueOf(stopwatch.getElapsedTime()));
     }
 }

@@ -27,7 +27,8 @@ import androidx.annotation.Nullable;
 
 /**
  * The Stopwatch class is used for creating and using a simple stopwatch with basic features like : start, pause, resume and split.
- * It allows you to send a TextView and automatically updates it every 0.1 seconds.
+ * It allows you to send a TextView and automatically updates it every 0.1 seconds (or as set by you).
+ * You can also implement the custom OnTickListener to listen for time changes every time period.
  * Threading on a separate thread is handled by the class itself. You just need to call appropriate methods to control the stopwatch.
  *
  * Created by Yashovardhan99 on 8/12/18 as a part of TimeIt.
@@ -42,6 +43,8 @@ public class Stopwatch implements Runnable {
     private TextView textView;
     private long start, current, elapsedTime, lapTime;
     private boolean started, paused, logEnabled;
+    private OnTickListener onTickListener;
+    private long clockDelay;
 
     /** The default constructor should be called to create an object to call functions accordingly. */
     public Stopwatch() {
@@ -55,6 +58,8 @@ public class Stopwatch implements Runnable {
         splits = new LinkedList<>();
         textView = null;
         lapTime = 0;
+        onTickListener = null;
+        clockDelay = 100;
     }
 
     /** Returns true if the stopwatch has started
@@ -92,6 +97,23 @@ public class Stopwatch implements Runnable {
     }
 
     /**
+     * Get a list of all splits that have been created.
+     * @return all splits created with split method.
+     * @see Split
+     */
+    public LinkedList<Split> getSplits() {
+        return splits;
+    }
+
+    /**
+     * Returns the currently set clock delay
+     * @return currently set clock delay in milliseconds (default: 100ms)
+     */
+    public long getClockDelay() {
+        return clockDelay;
+    }
+
+    /**
      * Set whether to print debug logs or not. If enabled, it will log each time the time is updated.
      *
      * @param debugMode desired debugging status
@@ -108,6 +130,24 @@ public class Stopwatch implements Runnable {
      */
     public void setTextView(@Nullable TextView textView) {
         this.textView = textView;
+    }
+
+    /**
+     * Set an OnTickListener to listen for clock changes.
+     *
+     * @param onTickListener a reference to the interface implementation.
+     */
+    public void setOnTickListener(OnTickListener onTickListener) {
+        this.onTickListener = onTickListener;
+    }
+
+    /** Set a custom clock delay to increase/decrease update frequency.
+     * Clock delay is the time the thread sleeps for while running before updating the time.
+     * @param clockDelay clock delay in milliseconds (default : 100ms)
+     * @see Thread#sleep(long)
+     */
+    public void setClockDelay(long clockDelay) {
+        this.clockDelay = clockDelay;
     }
 
     /**
@@ -205,15 +245,6 @@ public class Stopwatch implements Runnable {
     }
 
     /**
-     * Get a list of all splits that have been created.
-     * @return all splits created with split method.
-     * @see Split
-     */
-    public LinkedList<Split> getSplits() {
-        return splits;
-    }
-
-    /**
      * This is the main thread which runs the stopwatch.
      * Please DO NOT call this directly. Use the start() method instead.
      * @see #start
@@ -233,7 +264,7 @@ public class Stopwatch implements Runnable {
                 }
             }
             try {
-                Thread.sleep(100);
+                Thread.sleep(clockDelay);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -244,6 +275,9 @@ public class Stopwatch implements Runnable {
             if (logEnabled) {
                 Log.d("STOPWATCH", elapsedTime / 1000 + " seconds, " + elapsedTime % 1000 + " milliseconds");
             }
+
+            if(onTickListener !=null)
+                onTickListener.onTick(this);
 
             if (textView != null) {
                 final StringBuilder displayTime = new StringBuilder();
