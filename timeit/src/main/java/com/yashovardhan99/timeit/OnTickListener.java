@@ -17,8 +17,17 @@
 package com.yashovardhan99.timeit;
 
 /**
+ * Interface to listen for tick events every time clock is updated. Useful for scenarios where you want to do more than update a textField based on time.
  * Created by Yashovardhan99 on 10/12/18 as a part of TimeIt.
+ * @author Yashovardhan Dhanania
+ * @version 1.0
+ * @see Stopwatch
  */
 public interface OnTickListener {
+    /**
+     * Called every time the clock 'ticks'. The stopwatch ticks after a delay of 100ms (or as specified).
+     *
+     * @param stopwatch Reference to the currently calling stopwatch.
+     */
     void onTick(Stopwatch stopwatch);
 }
