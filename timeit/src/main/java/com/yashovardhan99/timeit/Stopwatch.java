@@ -26,10 +26,12 @@ import java.util.LinkedList;
 import androidx.annotation.Nullable;
 
 /**
- * Created by Yashovardhan99 on 8/12/18 as a part of TimeIt.
  * The Stopwatch class is used for creating and using a simple stopwatch with basic features like : start, pause, resume and split.
  * It allows you to send a TextView and automatically updates it every 0.1 seconds.
  * Threading on a separate thread is handled by the class itself. You just need to call appropriate methods to control the stopwatch.
+ *
+ * Created by Yashovardhan99 on 8/12/18 as a part of TimeIt.
+ *
  * @author Yashovardhan Dhanania
  * @version 1.0
  * @see java.lang.Runnable
@@ -38,20 +40,21 @@ public class Stopwatch implements Runnable {
     private final Object pauseLock;
     private LinkedList<Split> splits;
     private TextView textView;
-    private long start, current, runtime;
+    private long start, current, elapsedTime, lapTime;
     private boolean started, paused, logEnabled;
 
     /** The default constructor should be called to create an object to call functions accordingly. */
     public Stopwatch() {
         start = System.currentTimeMillis();
         current = System.currentTimeMillis();
-        runtime = 0;
+        elapsedTime = 0;
         started = false;
         paused = false;
         logEnabled = false;
         pauseLock = new Object();
         splits = new LinkedList<>();
         textView = null;
+        lapTime = 0;
     }
 
     /** Returns true if the stopwatch has started
@@ -70,17 +73,19 @@ public class Stopwatch implements Runnable {
         return paused;
     }
 
-    /** Gets the current time the stopwatch has been running for in milliseconds
+    /** Gets the current elapsed time the stopwatch has been running for in milliseconds
      *
-     * @return  a long with the time in milliseconds the stopwatch has been running for.
+     * @return  the time in milliseconds the stopwatch has been running for.
      */
-    public long getTime() {
-        return runtime;
+    public long getElapsedTime() {
+        return elapsedTime;
     }
 
 
     /**
-     * @return long time when the stopwatch was started in milliseconds.
+     * Returns the clock time (in milliseconds) when the stopwatch was started
+     *
+     * @return time when the stopwatch was started in milliseconds.
      */
     public long getStart() {
         return start;
@@ -89,7 +94,7 @@ public class Stopwatch implements Runnable {
     /**
      * Set whether to print debug logs or not. If enabled, it will log each time the time is updated.
      *
-     * @param debugMode debugging status
+     * @param debugMode desired debugging status
      */
     public void setDebugMode(boolean debugMode) {
         logEnabled = debugMode;
@@ -100,7 +105,6 @@ public class Stopwatch implements Runnable {
      * If not provided, or set to null, you need to manually display the time.
      *
      * @param textView the textView where you want to display the stopwatch time. Can be null.
-     * @see TextView
      */
     public void setTextView(@Nullable TextView textView) {
         this.textView = textView;
@@ -121,7 +125,9 @@ public class Stopwatch implements Runnable {
             paused = false;
             start = System.currentTimeMillis();
             current = System.currentTimeMillis();
-            runtime = 0;
+            lapTime = 0;
+            elapsedTime = 0;
+            splits.clear();
             Thread timer = new Thread(this);
             timer.start();
         }
@@ -191,14 +197,16 @@ public class Stopwatch implements Runnable {
 
         if(!started)
             throw new IllegalStateException("Not Started");
-        Split split = new Split(runtime, runtime - splits.getLast().getSplitTime());
+        Split split = new Split(elapsedTime, lapTime);
+        lapTime = 0;
         if (logEnabled)
             Log.d("STOPWATCH", "split at " + split.getSplitTime() + ". Lap = " + split.getLapTime());
         splits.add(split);
     }
 
     /**
-     * @return LinkedList of Split containing all splits created with split method.
+     * Get a list of all splits that have been created.
+     * @return all splits created with split method.
      * @see Split
      */
     public LinkedList<Split> getSplits() {
@@ -206,7 +214,8 @@ public class Stopwatch implements Runnable {
     }
 
     /**
-     * This is the main thread which runs the stopwatch. Please DO NOT call this directly. Use the start() method instead.
+     * This is the main thread which runs the stopwatch.
+     * Please DO NOT call this directly. Use the start() method instead.
      * @see #start
      */
     @Override
@@ -229,19 +238,20 @@ public class Stopwatch implements Runnable {
                 e.printStackTrace();
             }
             long time = System.currentTimeMillis();
-            runtime += time - current;
+            elapsedTime += time - current;
+            lapTime += time - current;
             current = time;
             if (logEnabled) {
-                Log.d("STOPWATCH", runtime / 1000 + " seconds, " + runtime % 1000 + " milliseconds");
+                Log.d("STOPWATCH", elapsedTime / 1000 + " seconds, " + elapsedTime % 1000 + " milliseconds");
             }
 
             if (textView != null) {
                 final StringBuilder displayTime = new StringBuilder();
                 int format; //0 - SS.ss, 1 - M:SS.ss. 2 - MM:SS, 3 - HH:MM:SS
-                int seconds = (int) ((runtime / 1000) % 60);
-                int milliseconds = (int) ((runtime % 1000)/10);
-                int minutes = (int) (runtime/(60 * 1000)%60);
-                int hours = (int) (runtime / (60 * 60 * 1000));
+                int seconds = (int) ((elapsedTime / 1000) % 60);
+                int milliseconds = (int) ((elapsedTime % 1000)/10);
+                int minutes = (int) (elapsedTime /(60 * 1000)%60);
+                int hours = (int) (elapsedTime / (60 * 60 * 1000));
                 if (minutes == 0)
                     format = 0;
                 else if (minutes < 10)

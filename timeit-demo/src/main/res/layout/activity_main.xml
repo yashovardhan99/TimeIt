@@ -42,15 +42,19 @@
         app:layout_constraintTop_toBottomOf="@id/time"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:onClick="onClick"/>
+        android:onClick="onClick"
+        android:layout_margin="8dp"/>
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/stop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:onClick="onClick"
         android:text="Stop"
-        android:id="@+id/stop"
-        app:layout_constraintTop_toBottomOf="@id/start"
-        android:onClick="onClick"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/pause"
+        app:layout_constraintTop_toBottomOf="@id/start" />
 
     <com.google.android.material.button.MaterialButton
         android:layout_width="wrap_content"
@@ -59,7 +63,9 @@
         android:id="@+id/pause"
         app:layout_constraintTop_toBottomOf="@id/start"
         app:layout_constraintStart_toEndOf="@id/stop"
-        android:onClick="onClick"/>
+        app:layout_constraintEnd_toStartOf="@id/resume"
+        android:onClick="onClick"
+        android:layout_margin="8dp"/>
 
     <com.google.android.material.button.MaterialButton
         android:layout_width="wrap_content"
@@ -68,8 +74,34 @@
         android:id="@+id/resume"
         app:layout_constraintTop_toBottomOf="@id/start"
         app:layout_constraintStart_toEndOf="@id/pause"
-        android:onClick="onClick"/>
+        app:layout_constraintEnd_toStartOf="@id/split"
+        android:onClick="onClick"
+        android:layout_margin="8dp"/>
 
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Split"
+        android:id="@+id/split"
+        app:layout_constraintTop_toBottomOf="@id/start"
+        app:layout_constraintStart_toEndOf="@id/resume"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:onClick="onClick"
+        android:layout_margin="8dp"/>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/split"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:padding="16dp"
+        android:id="@+id/split_scroller">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:id="@+id/split_log"/>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

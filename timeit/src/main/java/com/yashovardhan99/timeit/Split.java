@@ -36,6 +36,7 @@ public class Split {
     }
 
     /**
+     * Gets the lap time in milliseconds
      * @return the time in milliseconds between this and the last split/lap
      * @see Stopwatch#split()
      */
@@ -43,7 +44,7 @@ public class Split {
         return lapTime;
     }
 
-    /**
+    /** Gets the split time in milliseconds
      * @return the time in milliseconds since the stopwatch was running at the instant this split was created.
      * @see Stopwatch#split()
      */

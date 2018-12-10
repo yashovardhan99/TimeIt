@@ -19,15 +19,19 @@ package com.yashovardhan99.stopwatch;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.yashovardhan99.timeit.Split;
 import com.yashovardhan99.timeit.Stopwatch;
+
+import java.util.LinkedList;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    TextView time;
+    TextView time, splitLog;
     Stopwatch stopwatch;
 
     @Override
@@ -38,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         stopwatch.setDebugMode(true);
         time = findViewById(R.id.time);
         stopwatch.setTextView(time);
+        splitLog = findViewById(R.id.split_log);
     }
 
     @Override
@@ -45,8 +50,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.d("ONCLICK", v.toString());
         switch (v.getId()){
             case R.id.start:
-                if(!stopwatch.isStarted())
+                if(!stopwatch.isStarted()) {
                     stopwatch.start();
+                    splitLog.setText(null);
+                }
                 break;
             case R.id.stop:
                 if(stopwatch.isStarted())
@@ -60,6 +67,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if(stopwatch.isPaused())
                     stopwatch.resume();
                 break;
+            case R.id.split:
+                if(stopwatch.isStarted())
+                    stopwatch.split();
+                StringBuilder stringBuilder = new StringBuilder();
+                LinkedList<Split> splits = stopwatch.getSplits();
+                for(Split split : splits){
+                    long lapTime = split.getLapTime();
+                    long splitTime = split.getSplitTime();
+                    stringBuilder.append(lapTime).append(" <- Lap ").append(splits.indexOf(split)).append(" Split -> ").append(splitTime).append("\n");
+                }
+                splitLog.setText(stringBuilder.toString());
+                ((ScrollView)(findViewById(R.id.split_scroller))).fullScroll(View.FOCUS_DOWN);
         }
     }
 }
