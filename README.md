@@ -35,9 +35,6 @@ TimeIt is very easy to use. If you face any trouble, you can see the javadocs [a
 ## Download
 TimeIt is available on jitpack and bintray. (pending approval for jcenter). To download, use the badges above or follow these instructions:
 ### Jitpack
-### Jitpack
-o get a Git project into your build:
-
 Step 1. Add the JitPack repository to your root build.gradle at the end of repositories:
 ```gradle
 	allprojects {
