@@ -16,6 +16,7 @@
 
 package com.yashovardhan99.timeit;
 
+import android.os.Handler;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -34,17 +35,17 @@ import androidx.annotation.Nullable;
  * Created by Yashovardhan99 on 8/12/18 as a part of TimeIt.
  *
  * @author Yashovardhan Dhanania
- * @version 1.0
+ * @version 1.1
  * @see java.lang.Runnable
  */
 public class Stopwatch implements Runnable {
-    private final Object pauseLock;
     private LinkedList<Split> splits;
     private TextView textView;
     private long start, current, elapsedTime, lapTime;
     private boolean started, paused, logEnabled;
     private OnTickListener onTickListener;
     private long clockDelay;
+    private Handler handler;
 
     /** The default constructor should be called to create an object to call functions accordingly. */
     public Stopwatch() {
@@ -54,38 +55,67 @@ public class Stopwatch implements Runnable {
         started = false;
         paused = false;
         logEnabled = false;
-        pauseLock = new Object();
         splits = new LinkedList<>();
         textView = null;
         lapTime = 0;
         onTickListener = null;
         clockDelay = 100;
+        handler = new Handler();
     }
 
-    /** Returns true if the stopwatch has started
+    /**
+     * Formats time in either of the following formats depending on time passed - SS.ss, MM:SS.ss, HH:MM:SS.
+     * @param elapsedTime time in milliseconds which has to be formatted
+     * @return formatted time in String form
+     */
+    private static String getFormattedTime(long elapsedTime) {
+        final StringBuilder displayTime = new StringBuilder();
+
+        int milliseconds = (int) ((elapsedTime % 1000) / 10);
+        int seconds = (int) ((elapsedTime / 1000) % 60);
+        int minutes = (int) (elapsedTime / (60 * 1000) % 60);
+        int hours = (int) (elapsedTime / (60 * 60 * 1000));
+
+        NumberFormat f = new DecimalFormat("00");
+
+        if (minutes == 0)
+            displayTime.append(f.format(seconds)).append('.').append(f.format(milliseconds));
+
+        else if (hours == 0)
+            displayTime.append(f.format(minutes)).append(":").append(f.format(seconds)).append(f.format(milliseconds));
+
+        else
+            displayTime.append(hours).append(":").append(f.format(minutes)).append(":").append(f.format(seconds));
+
+        return displayTime.toString();
+    }
+
+    /**
+     * Returns true if the stopwatch has started
      *
      * @return true if the stopwatch has been started by calling start(). False otherwise
-     * */
+     */
     public boolean isStarted() {
         return started;
     }
 
-    /** Returns true if the stopwatch is paused
+    /**
+     * Returns true if the stopwatch is paused
      *
      * @return true if the stopwatch is paused. False otherwise
-     * */
+     */
     public boolean isPaused() {
         return paused;
     }
 
-    /** Gets the current elapsed time the stopwatch has been running for in milliseconds
+    /**
+     * Gets the current elapsed time the stopwatch has been running for in milliseconds
      *
-     * @return  the time in milliseconds the stopwatch has been running for.
+     * @return the time in milliseconds the stopwatch has been running for.
      */
     public long getElapsedTime() {
         return elapsedTime;
     }
-
 
     /**
      * Returns the clock time (in milliseconds) when the stopwatch was started
@@ -98,6 +128,7 @@ public class Stopwatch implements Runnable {
 
     /**
      * Get a list of all splits that have been created.
+     *
      * @return all splits created with split method.
      * @see Split
      */
@@ -107,10 +138,22 @@ public class Stopwatch implements Runnable {
 
     /**
      * Returns the currently set clock delay
+     *
      * @return currently set clock delay in milliseconds (default: 100ms)
      */
     public long getClockDelay() {
         return clockDelay;
+    }
+
+    /**
+     * Set a custom clock delay to increase/decrease update frequency.
+     * Clock delay is the delay in between each successive clock update.
+     *
+     * @param clockDelay clock delay in milliseconds (default : 100ms)
+     * @see Thread#sleep(long)
+     */
+    public void setClockDelay(long clockDelay) {
+        this.clockDelay = clockDelay;
     }
 
     /**
@@ -141,15 +184,6 @@ public class Stopwatch implements Runnable {
         this.onTickListener = onTickListener;
     }
 
-    /** Set a custom clock delay to increase/decrease update frequency.
-     * Clock delay is the time the thread sleeps for while running before updating the time.
-     * @param clockDelay clock delay in milliseconds (default : 100ms)
-     * @see Thread#sleep(long)
-     */
-    public void setClockDelay(long clockDelay) {
-        this.clockDelay = clockDelay;
-    }
-
     /**
      * Starts the stopwatch at the current time. Cannot be called again without calling stop() first.
      *
@@ -168,8 +202,7 @@ public class Stopwatch implements Runnable {
             lapTime = 0;
             elapsedTime = 0;
             splits.clear();
-            Thread timer = new Thread(this);
-            timer.start();
+            handler.post(this);
         }
     }
 
@@ -184,13 +217,16 @@ public class Stopwatch implements Runnable {
         if (!started)
             throw new IllegalStateException("Not Started");
         else {
+            updateElapsed(System.currentTimeMillis());
             started = false;
             paused = false;
+            handler.removeCallbacks(this);
         }
     }
 
     /**
      * Pauses the stopwatch. Using this allows you to resume the stopwatch from the current state.
+     *
      * @throws IllegalStateException if stopwatch is already paused or not started yet.
      * @see #resume()
      * @see #isPaused()
@@ -198,10 +234,12 @@ public class Stopwatch implements Runnable {
     public void pause() {
         if (paused)
             throw new IllegalStateException("Already Paused");
-        else if(!started)
+        else if (!started)
             throw new IllegalStateException("Not Started");
         else {
+            updateElapsed(System.currentTimeMillis());
             paused = true;
+            handler.removeCallbacks(this);
         }
     }
 
@@ -215,14 +253,12 @@ public class Stopwatch implements Runnable {
     public void resume() {
         if (!paused)
             throw new IllegalStateException("Not Paused");
-        else if(!started)
+        else if (!started)
             throw new IllegalStateException("Not Started");
         else {
             paused = false;
             current = System.currentTimeMillis();
-            synchronized (pauseLock) {
-                pauseLock.notify();
-            }
+            handler.post(this);
         }
     }
 
@@ -230,12 +266,11 @@ public class Stopwatch implements Runnable {
      * Creates a new split/lap at the current time. Can even be called when stopwatch is paused.
      *
      * @throws IllegalStateException if stopwatch is not started yet
-     *
      * @see #getSplits()
      */
     public void split() {
 
-        if(!started)
+        if (!started)
             throw new IllegalStateException("Not Started");
         Split split = new Split(elapsedTime, lapTime);
         lapTime = 0;
@@ -247,78 +282,35 @@ public class Stopwatch implements Runnable {
     /**
      * This is the main thread which runs the stopwatch.
      * Please DO NOT call this directly. Use the start() method instead.
+     *
      * @see #start
      */
     @Override
     public void run() {
-        while (started) {
-            if (paused) {
-                try {
-                    synchronized (pauseLock) {
-                        if (logEnabled)
-                            Log.d("STOPWATCH", "Paused");
-                        pauseLock.wait();
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            try {
-                Thread.sleep(clockDelay);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            long time = System.currentTimeMillis();
-            elapsedTime += time - current;
-            lapTime += time - current;
-            current = time;
-            if (logEnabled) {
-                Log.d("STOPWATCH", elapsedTime / 1000 + " seconds, " + elapsedTime % 1000 + " milliseconds");
-            }
 
-            if(onTickListener !=null)
-                onTickListener.onTick(this);
-
-            if (textView != null) {
-                final StringBuilder displayTime = new StringBuilder();
-                int format; //0 - SS.ss, 1 - M:SS.ss. 2 - MM:SS, 3 - HH:MM:SS
-                int seconds = (int) ((elapsedTime / 1000) % 60);
-                int milliseconds = (int) ((elapsedTime % 1000)/10);
-                int minutes = (int) (elapsedTime /(60 * 1000)%60);
-                int hours = (int) (elapsedTime / (60 * 60 * 1000));
-                if (minutes == 0)
-                    format = 0;
-                else if (minutes < 10)
-                    format = 1;
-                else if (hours == 0)
-                    format = 2;
-                else
-                    format = 3;
-                NumberFormat f = new DecimalFormat("00");
-
-                switch (format) {
-                    case 0:
-                        displayTime.append(f.format(seconds));
-                        displayTime.append('.');
-                        displayTime.append(f.format(milliseconds));
-                        break;
-                    case 1:
-                        displayTime.append(minutes).append(":").append(f.format(seconds)).append(".").append(f.format(milliseconds));
-                        break;
-                    case 2:
-                        displayTime.append(f.format(minutes)).append(":").append(f.format(seconds));
-                        break;
-                    case 3:
-                        displayTime.append(hours).append(":").append(f.format(minutes)).append(":").append(f.format(seconds));
-                        break;
-                }
-                textView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        textView.setText(displayTime.toString());
-                    }
-                });
-            }
+        if(!started || paused) {
+            handler.removeCallbacks(this);
+            return;
         }
+        updateElapsed(System.currentTimeMillis());
+        handler.postDelayed(this, clockDelay);
+
+        if (logEnabled)
+            Log.d("STOPWATCH", elapsedTime / 1000 + " seconds, " + elapsedTime % 1000 + " milliseconds");
+
+        if (onTickListener != null)
+            onTickListener.onTick(this);
+
+        if (textView != null) {
+            String displayTime = getFormattedTime(elapsedTime);
+            textView.setText(displayTime);
+        }
+
+    }
+
+    private void updateElapsed(long time) {
+        elapsedTime += time - current;
+        lapTime += time - current;
+        current = time;
     }
 }
