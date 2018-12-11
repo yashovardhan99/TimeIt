@@ -1,4 +1,8 @@
 # TimeIt
+
+[![](https://jitpack.io/v/yashovardhan99/TimeIt.svg)](https://jitpack.io/#yashovardhan99/TimeIt)
+[ ![Download](https://api.bintray.com/packages/yashovardhan99/TimeIt/TimeIt/images/download.svg) ](https://bintray.com/yashovardhan99/TimeIt/TimeIt/_latestVersion)
+
 A simple and easy to use stopwatch library for android
 ## Introduction
 A stopwatch can be a very important widget in an app and yet creating it has been very difficult. Creating a stopwatch requires you to create a seperate thread to keep track of the time and then post the updates on the UI thread. This process becomes complicated very quickly. Especially if you plan on adding features like pause and split.
@@ -29,7 +33,44 @@ TimeIt also allows you to keep track of splits with the stopwatch by simply call
 TimeIt is very easy to use. If you face any trouble, you can see the javadocs [available here](https://yashovardhan99.github.io/TimeIt/JavaDocs/). A demo app is included [here](https://github.com/yashovardhan99/TimeIt/tree/master/timeit-demo) for your reference. It implements the basic features of the library. 
 
 ## Download
-TimeIt is not yet available for download. Clone this repo and import the `timeit` module in your android project to use it for now.
+TimeIt is available on jitpack and bintray. (pending approval for jcenter). To download, use the badges above or follow these instructions:
+### Jitpack
+### Jitpack
+o get a Git project into your build:
+
+Step 1. Add the JitPack repository to your root build.gradle at the end of repositories:
+```gradle
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+Step 2 : Add the dependency in your app level build.gradle
+```gradle
+	dependencies {
+	        implementation 'com.github.yashovardhan99:TimeIt:1.0.0'
+	}
+```
+### Bintray
+
+Step 1 : Download or copy the Gradle configuration in your project level build.gradle:
+```gradle
+repositories {
+    maven {
+        url  "https://dl.bintray.com/yashovardhan99/TimeIt" 
+    }
+}
+        
+```
+Step 2 : Add the dependency in your app level build.gradle
+
+```gradle
+implementation 'com.yashovardhan99.timeit:timeit:1.0.0'
+```
+
+
 ## Contributing
 Contributing guidelines will be available soon. Feel free to report any issues or make new pull requests! TimeIt is an open source project and is free for all to use and improve! 
 
