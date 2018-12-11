@@ -16,6 +16,30 @@
 
 apply plugin: 'com.android.library'
 
+ext {
+    bintrayRepo = 'TimeIt'
+    bintrayName = 'TimeIt'
+
+    publishedGroupId = 'com.yashovardhan99.timeit'
+    libraryName = 'TimeIt'
+    artifact = 'timeit'
+
+    libraryDescription = 'A simple and easy stopwatch library for android'
+
+    siteUrl = 'https://yashovardhan99.github.io/TimeIt'
+    gitUrl = 'https://github.com/yashovardhan99/TimeIt.git'
+
+    libraryVersion = '1.0.0'
+
+    developerId = 'yashovardhan99'
+    developerName = 'Yashovardhan Dhanania'
+    developerEmail = 'yashovardhandhanania@outlook.in'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
 android {
     compileSdkVersion 28
 
@@ -48,3 +72,7 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.1.1-beta01'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1-beta01'
 }
+
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+apply from : 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
+apply plugin: 'maven'
