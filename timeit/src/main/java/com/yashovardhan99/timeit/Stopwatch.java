@@ -25,6 +25,7 @@ import java.text.NumberFormat;
 import java.util.LinkedList;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RestrictTo;
 
 /**
  * The Stopwatch class is used for creating and using a simple stopwatch with basic features like : start, pause, resume and split.
@@ -285,6 +286,7 @@ public class Stopwatch implements Runnable {
      *
      * @see #start
      */
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
     @Override
     public void run() {
 
@@ -305,9 +307,11 @@ public class Stopwatch implements Runnable {
             String displayTime = getFormattedTime(elapsedTime);
             textView.setText(displayTime);
         }
-
     }
 
+    /** Updates the time in elapsed and lap time and then updates the current time.
+     * @param time Current time in millis. Passing any other value may result in odd behaviour
+     */
     private void updateElapsed(long time) {
         elapsedTime += time - current;
         lapTime += time - current;

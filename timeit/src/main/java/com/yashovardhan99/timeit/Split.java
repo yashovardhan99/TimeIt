@@ -16,6 +16,8 @@
 
 package com.yashovardhan99.timeit;
 
+import androidx.annotation.RestrictTo;
+
 /**
  * Created by Yashovardhan99 on 8/12/18 as a part of TimeIt.
  * This is a utility class for the main Stopwatch class to help create and save splits and laps.
@@ -27,9 +29,11 @@ public class Split {
     private long splitTime, lapTime;
 
     /**
+     * Constructor to create a Split object.
      * @param splitTime the time in milliseconds for which stopwatch has been running
      * @param lapTime the time in milliseconds since the last split/lap
      */
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
     public Split(long splitTime, long lapTime){
         this.splitTime = splitTime;
         this.lapTime = lapTime;
