@@ -47,13 +47,15 @@ public class Stopwatch {
     private long clockDelay;
     private Handler handler;
 
-    private final Runnable runnable = () -> {
+    private final Runnable runnable = this::run;
+
+    private void run() {
         if (!started || paused) {
-            removeCallbacks(handler);
+            handler.removeCallbacks(runnable);
             return;
         }
         updateElapsed(System.currentTimeMillis());
-        postDelayed(handler);
+        handler.postDelayed(runnable,clockDelay);
 
         if (logEnabled)
             Log.d("STOPWATCH", elapsedTime / 1000 + " seconds, " + elapsedTime % 1000 + " milliseconds");
@@ -65,7 +67,7 @@ public class Stopwatch {
             String displayTime = getFormattedTime(elapsedTime);
             textView.setText(displayTime);
         }
-    };
+    }
 
     /**
      * The default constructor should be called to create an object to call functions accordingly.
@@ -313,10 +315,4 @@ public class Stopwatch {
         current = time;
     }
 
-    private void removeCallbacks(Handler handler){
-        handler.removeCallbacks(runnable);
-    }
-    private void postDelayed(Handler handler){
-        handler.postDelayed(runnable, clockDelay);
-    }
 }
