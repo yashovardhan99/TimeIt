@@ -25,21 +25,20 @@ import java.text.NumberFormat;
 import java.util.LinkedList;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RestrictTo;
 
 /**
  * The Stopwatch class is used for creating and using a simple stopwatch with basic features like : start, pause, resume and split.
  * It allows you to send a TextView and automatically updates it every 0.1 seconds (or as set by you).
  * You can also implement the custom OnTickListener to listen for time changes every time period.
  * Threading on a separate thread is handled by the class itself. You just need to call appropriate methods to control the stopwatch.
- *
+ * <p>
  * Created by Yashovardhan99 on 8/12/18 as a part of TimeIt.
  *
  * @author Yashovardhan Dhanania
  * @version 1.1
  * @see java.lang.Runnable
  */
-public class Stopwatch implements Runnable {
+public class Stopwatch {
     private LinkedList<Split> splits;
     private TextView textView;
     private long start, current, elapsedTime, lapTime;
@@ -48,7 +47,29 @@ public class Stopwatch implements Runnable {
     private long clockDelay;
     private Handler handler;
 
-    /** The default constructor should be called to create an object to call functions accordingly. */
+    private final Runnable runnable = () -> {
+        if (!started || paused) {
+            removeCallbacks(handler);
+            return;
+        }
+        updateElapsed(System.currentTimeMillis());
+        postDelayed(handler);
+
+        if (logEnabled)
+            Log.d("STOPWATCH", elapsedTime / 1000 + " seconds, " + elapsedTime % 1000 + " milliseconds");
+
+        if (onTickListener != null)
+            onTickListener.onTick(this);
+
+        if (textView != null) {
+            String displayTime = getFormattedTime(elapsedTime);
+            textView.setText(displayTime);
+        }
+    };
+
+    /**
+     * The default constructor should be called to create an object to call functions accordingly.
+     */
     public Stopwatch() {
         start = System.currentTimeMillis();
         current = System.currentTimeMillis();
@@ -66,6 +87,7 @@ public class Stopwatch implements Runnable {
 
     /**
      * Formats time in either of the following formats depending on time passed - SS.ss, MM:SS.ss, HH:MM:SS.
+     *
      * @param elapsedTime time in milliseconds which has to be formatted
      * @return formatted time in String form
      */
@@ -203,7 +225,7 @@ public class Stopwatch implements Runnable {
             lapTime = 0;
             elapsedTime = 0;
             splits.clear();
-            handler.post(this);
+            handler.post(runnable);
         }
     }
 
@@ -221,7 +243,7 @@ public class Stopwatch implements Runnable {
             updateElapsed(System.currentTimeMillis());
             started = false;
             paused = false;
-            handler.removeCallbacks(this);
+            handler.removeCallbacks(runnable);
         }
     }
 
@@ -240,7 +262,7 @@ public class Stopwatch implements Runnable {
         else {
             updateElapsed(System.currentTimeMillis());
             paused = true;
-            handler.removeCallbacks(this);
+            handler.removeCallbacks(runnable);
         }
     }
 
@@ -259,7 +281,7 @@ public class Stopwatch implements Runnable {
         else {
             paused = false;
             current = System.currentTimeMillis();
-            handler.post(this);
+            handler.post(runnable);
         }
     }
 
@@ -281,40 +303,20 @@ public class Stopwatch implements Runnable {
     }
 
     /**
-     * This is the main thread which runs the stopwatch.
-     * Please DO NOT call this directly. Use the start() method instead.
+     * Updates the time in elapsed and lap time and then updates the current time.
      *
-     * @see #start
-     */
-    @RestrictTo(RestrictTo.Scope.LIBRARY)
-    @Override
-    public void run() {
-
-        if(!started || paused) {
-            handler.removeCallbacks(this);
-            return;
-        }
-        updateElapsed(System.currentTimeMillis());
-        handler.postDelayed(this, clockDelay);
-
-        if (logEnabled)
-            Log.d("STOPWATCH", elapsedTime / 1000 + " seconds, " + elapsedTime % 1000 + " milliseconds");
-
-        if (onTickListener != null)
-            onTickListener.onTick(this);
-
-        if (textView != null) {
-            String displayTime = getFormattedTime(elapsedTime);
-            textView.setText(displayTime);
-        }
-    }
-
-    /** Updates the time in elapsed and lap time and then updates the current time.
      * @param time Current time in millis. Passing any other value may result in odd behaviour
      */
     private void updateElapsed(long time) {
         elapsedTime += time - current;
         lapTime += time - current;
         current = time;
+    }
+
+    private void removeCallbacks(Handler handler){
+        handler.removeCallbacks(runnable);
+    }
+    private void postDelayed(Handler handler){
+        handler.postDelayed(runnable, clockDelay);
     }
 }
