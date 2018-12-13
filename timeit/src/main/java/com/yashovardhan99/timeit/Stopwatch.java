@@ -47,30 +47,15 @@ public class Stopwatch {
     private long clockDelay;
     private Handler handler;
 
+    /**
+     * The runnable used to call the thread.
+     * @since 1.1
+     */
     private final Runnable runnable = this::run;
-
-    private void run() {
-        if (!started || paused) {
-            handler.removeCallbacks(runnable);
-            return;
-        }
-        updateElapsed(System.currentTimeMillis());
-        handler.postDelayed(runnable,clockDelay);
-
-        if (logEnabled)
-            Log.d("STOPWATCH", elapsedTime / 1000 + " seconds, " + elapsedTime % 1000 + " milliseconds");
-
-        if (onTickListener != null)
-            onTickListener.onTick(this);
-
-        if (textView != null) {
-            String displayTime = getFormattedTime(elapsedTime);
-            textView.setText(displayTime);
-        }
-    }
 
     /**
      * The default constructor should be called to create an object to call functions accordingly.
+     * @since 1.0
      */
     public Stopwatch() {
         start = System.currentTimeMillis();
@@ -90,6 +75,7 @@ public class Stopwatch {
     /**
      * Formats time in either of the following formats depending on time passed - SS.ss, MM:SS.ss, HH:MM:SS.
      *
+     * @since 1.1
      * @param elapsedTime time in milliseconds which has to be formatted
      * @return formatted time in String form
      */
@@ -118,6 +104,7 @@ public class Stopwatch {
     /**
      * Returns true if the stopwatch has started
      *
+     * @since 1.0
      * @return true if the stopwatch has been started by calling start(). False otherwise
      */
     public boolean isStarted() {
@@ -128,6 +115,7 @@ public class Stopwatch {
      * Returns true if the stopwatch is paused
      *
      * @return true if the stopwatch is paused. False otherwise
+     * @since 1.0
      */
     public boolean isPaused() {
         return paused;
@@ -137,6 +125,7 @@ public class Stopwatch {
      * Gets the current elapsed time the stopwatch has been running for in milliseconds
      *
      * @return the time in milliseconds the stopwatch has been running for.
+     * @since 1.0
      */
     public long getElapsedTime() {
         return elapsedTime;
@@ -146,6 +135,7 @@ public class Stopwatch {
      * Returns the clock time (in milliseconds) when the stopwatch was started
      *
      * @return time when the stopwatch was started in milliseconds.
+     * @since 1.0
      */
     public long getStart() {
         return start;
@@ -156,6 +146,7 @@ public class Stopwatch {
      *
      * @return all splits created with split method.
      * @see Split
+     * @since 1.0
      */
     public LinkedList<Split> getSplits() {
         return splits;
@@ -165,6 +156,7 @@ public class Stopwatch {
      * Returns the currently set clock delay
      *
      * @return currently set clock delay in milliseconds (default: 100ms)
+     * @since 1.0
      */
     public long getClockDelay() {
         return clockDelay;
@@ -176,6 +168,7 @@ public class Stopwatch {
      *
      * @param clockDelay clock delay in milliseconds (default : 100ms)
      * @see Thread#sleep(long)
+     * @since 1.0
      */
     public void setClockDelay(long clockDelay) {
         this.clockDelay = clockDelay;
@@ -185,6 +178,7 @@ public class Stopwatch {
      * Set whether to print debug logs or not. If enabled, it will log each time the time is updated.
      *
      * @param debugMode desired debugging status
+     * @since 1.0
      */
     public void setDebugMode(boolean debugMode) {
         logEnabled = debugMode;
@@ -195,6 +189,7 @@ public class Stopwatch {
      * If not provided, or set to null, you need to manually display the time.
      *
      * @param textView the textView where you want to display the stopwatch time. Can be null.
+     * @since 1.0
      */
     public void setTextView(@Nullable TextView textView) {
         this.textView = textView;
@@ -204,6 +199,7 @@ public class Stopwatch {
      * Set an OnTickListener to listen for clock changes.
      *
      * @param onTickListener a reference to the interface implementation.
+     * @since 1.0
      */
     public void setOnTickListener(OnTickListener onTickListener) {
         this.onTickListener = onTickListener;
@@ -215,6 +211,7 @@ public class Stopwatch {
      * @throws IllegalStateException if the stopwatch has already been started.
      * @see #stop()
      * @see #isStarted()
+     * @since 1.0
      */
     public void start() {
         if (started)
@@ -237,6 +234,7 @@ public class Stopwatch {
      * @throws IllegalStateException if stopwatch has not been started yet.
      * @see #start()
      * @see #isStarted()
+     * @since 1.0
      */
     public void stop() {
         if (!started)
@@ -255,6 +253,7 @@ public class Stopwatch {
      * @throws IllegalStateException if stopwatch is already paused or not started yet.
      * @see #resume()
      * @see #isPaused()
+     * @since 1.0
      */
     public void pause() {
         if (paused)
@@ -274,6 +273,7 @@ public class Stopwatch {
      * @throws IllegalStateException if stopwatch is not paused or not started yet.
      * @see #pause()
      * @see #isPaused()
+     * @since 1.0
      */
     public void resume() {
         if (!paused)
@@ -292,6 +292,7 @@ public class Stopwatch {
      *
      * @throws IllegalStateException if stopwatch is not started yet
      * @see #getSplits()
+     * @since 1.0
      */
     public void split() {
 
@@ -307,6 +308,7 @@ public class Stopwatch {
     /**
      * Updates the time in elapsed and lap time and then updates the current time.
      *
+     * @since 1.1
      * @param time Current time in millis. Passing any other value may result in odd behaviour
      */
     private void updateElapsed(long time) {
@@ -315,4 +317,28 @@ public class Stopwatch {
         current = time;
     }
 
+
+    /**
+     * The main thread responsible for updating and displaying the time
+     * @since 1.1
+     */
+    private void run() {
+        if (!started || paused) {
+            handler.removeCallbacks(runnable);
+            return;
+        }
+        updateElapsed(System.currentTimeMillis());
+        handler.postDelayed(runnable,clockDelay);
+
+        if (logEnabled)
+            Log.d("STOPWATCH", elapsedTime / 1000 + " seconds, " + elapsedTime % 1000 + " milliseconds");
+
+        if (onTickListener != null)
+            onTickListener.onTick(this);
+
+        if (textView != null) {
+            String displayTime = getFormattedTime(elapsedTime);
+            textView.setText(displayTime);
+        }
+    }
 }
