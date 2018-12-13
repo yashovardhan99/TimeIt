@@ -33,7 +33,25 @@ TimeIt also allows you to keep track of splits with the stopwatch by simply call
 TimeIt is very easy to use. If you face any trouble, you can see the javadocs [available here](https://yashovardhan99.github.io/TimeIt/JavaDocs/). A demo app is included [here](https://github.com/yashovardhan99/TimeIt/tree/master/timeit-demo) for your reference. It implements the basic features of the library. 
 
 ## Download
-TimeIt is available on jitpack and bintray. (pending approval for jcenter). To download, use the badges above or follow these instructions:
+TimeIt is available on jcenter, jitpack and bintray. To download, use the badges above or follow these instructions:
+
+### Jcenter
+Step 1. Add the JCenter repository to your root build.gradle at the end of repositories:
+```gradle
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jcenter.bintray.com' }
+		}
+	}
+```
+
+Step 2 : Add the dependency in your app level build.gradle
+
+```gradle
+implementation 'com.yashovardhan99.timeit:timeit:1.1.0'
+```
+
 ### Jitpack
 Step 1. Add the JitPack repository to your root build.gradle at the end of repositories:
 ```gradle
@@ -47,7 +65,7 @@ Step 1. Add the JitPack repository to your root build.gradle at the end of repos
 Step 2 : Add the dependency in your app level build.gradle
 ```gradle
 	dependencies {
-	        implementation 'com.github.yashovardhan99:TimeIt:1.0.0'
+	        implementation 'com.github.yashovardhan99:TimeIt:1.1.0'
 	}
 ```
 ### Bintray
@@ -64,7 +82,7 @@ repositories {
 Step 2 : Add the dependency in your app level build.gradle
 
 ```gradle
-implementation 'com.yashovardhan99.timeit:timeit:1.0.0'
+implementation 'com.yashovardhan99.timeit:timeit:1.1.0'
 ```
 
 
