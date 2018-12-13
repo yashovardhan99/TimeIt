@@ -2,6 +2,7 @@
 
 [![](https://jitpack.io/v/yashovardhan99/TimeIt.svg)](https://jitpack.io/#yashovardhan99/TimeIt)
 [ ![Download](https://api.bintray.com/packages/yashovardhan99/TimeIt/TimeIt/images/download.svg) ](https://bintray.com/yashovardhan99/TimeIt/TimeIt/_latestVersion)
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-TimeIt-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/7369)
 
 A simple and easy to use stopwatch library for android
 ## Introduction
