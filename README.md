@@ -88,7 +88,7 @@ implementation 'com.yashovardhan99.timeit:timeit:1.1.0'
 
 
 ## Contributing
-Contributing guidelines will be available soon. Feel free to report any issues or make new pull requests! TimeIt is an open source project and is free for all to use and improve! 
+Contributing guidelines are available [here](https://github.com/yashovardhan99/TimeIt/blob/master/CONTRIBUTING.md). Feel free to report any issues or make new pull requests! TimeIt is an open source project and is free for all to use and improve! 
 
 ## License
    Copyright 2018 Yashovardhan Dhanania
