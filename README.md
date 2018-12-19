@@ -6,7 +6,7 @@
 
 A simple and easy to use stopwatch library for android
 ## Introduction
-A stopwatch can be a very important widget in an app and yet creating it has been very difficult. Creating a stopwatch requires you to create a seperate thread to keep track of the time and then post the updates on the UI thread. This process becomes complicated very quickly. Especially if you plan on adding features like pause and split.
+A stopwatch can be a very important widget in an app and yet creating it has been very difficult. Creating a stopwatch requires you to create a separate thread to keep track of the time and then post the updates on the UI thread. This process becomes complicated very quickly. Especially if you plan on adding features like pause and split.
 
 With TimeIt, you can create a stopwatch app with very few lines of code!
 
@@ -23,7 +23,7 @@ TimeIt also allows you to keep track of splits with the stopwatch by simply call
 
 ## Features
 * Easy to use stopwatch library
-* No need to use seperate threads. Multithreading is handled by the library itself
+* No need to use separate threads. Multithreading is handled by the library itself
 * Supports pause/resume and split methods.
 * Supports an `OnTickListener` to listen for updates in clock.
 * Set the TextView directly with TimeIt (Automatically formats the time).
