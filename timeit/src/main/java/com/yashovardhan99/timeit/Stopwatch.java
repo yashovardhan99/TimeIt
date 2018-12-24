@@ -35,7 +35,7 @@ import androidx.annotation.Nullable;
  * Created by Yashovardhan99 on 8/12/18 as a part of TimeIt.
  *
  * @author Yashovardhan Dhanania
- * @version 1.1
+ * @version 1.2
  * @see java.lang.Runnable
  */
 public class Stopwatch {
@@ -351,12 +351,12 @@ public class Stopwatch {
      * Created by Yashovardhan99 on 10/12/18 as a part of TimeIt.
      *
      * @author Yashovardhan Dhanania
-     * @version 1.0
+     * @since 1.2
      */
     public interface OnTickListener {
         /**
          * Called every time the clock 'ticks'. The stopwatch ticks after a delay of 100ms (or as specified).
-         *
+         * @since 1.2
          * @param stopwatch Reference to the currently calling stopwatch.
          */
         void onTick(Stopwatch stopwatch);
