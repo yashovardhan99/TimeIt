@@ -79,7 +79,7 @@ public class Stopwatch {
      * @param elapsedTime time in milliseconds which has to be formatted
      * @return formatted time in String form
      */
-    private static String getFormattedTime(long elapsedTime) {
+    protected static String getFormattedTime(long elapsedTime) {
         final StringBuilder displayTime = new StringBuilder();
 
         int milliseconds = (int) ((elapsedTime % 1000) / 10);
