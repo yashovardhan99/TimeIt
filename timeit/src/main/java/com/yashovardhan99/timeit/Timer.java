@@ -28,21 +28,20 @@ public class Timer {
     private long duration;
     private TextView textView;
     private Stopwatch stopwatch;
+    private Timer.OnTickListener onTickListener;
 
-
+    @SuppressWarnings("WeakerAccess")
     public Timer() {
         stopwatch = new Stopwatch();
         textView = null;
         duration = 0;
         stopwatch.setOnTickListener(this::onTick);
+        onTickListener = null;
     }
+
 
     public Timer(long duration) {
         this();
-        this.duration = duration;
-    }
-
-    public void setDuration(long duration) {
         this.duration = duration;
     }
 
@@ -62,8 +61,20 @@ public class Timer {
         return stopwatch.getStart();
     }
 
+    public long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
     public void setTextView(@Nullable TextView textView) {
         this.textView = textView;
+    }
+
+    public void setOnTickListener(OnTickListener onTickListener) {
+        this.onTickListener = onTickListener;
     }
 
     public void start() {
@@ -86,10 +97,20 @@ public class Timer {
     }
 
     private void onTick(Stopwatch stopwatch) {
+        if (onTickListener != null)
+            onTickListener.onTick(this);
         if (stopwatch.getElapsedTime() >= duration) {
             textView.setText(Stopwatch.getFormattedTime(0));
             stopwatch.stop();
+            if (onTickListener != null)
+                onTickListener.onComplete(this);
         } else
             textView.setText(Stopwatch.getFormattedTime(duration - stopwatch.getElapsedTime()));
+    }
+
+    public interface OnTickListener {
+        void onTick(Timer timer);
+
+        void onComplete(Timer timer);
     }
 }

@@ -49,12 +49,14 @@ public class Stopwatch {
 
     /**
      * The runnable used to call the thread.
+     *
      * @since 1.1
      */
     private final Runnable runnable = this::run;
 
     /**
      * The default constructor should be called to create an object to call functions accordingly.
+     *
      * @since 1.0
      */
     public Stopwatch() {
@@ -75,11 +77,11 @@ public class Stopwatch {
     /**
      * Formats time in either of the following formats depending on time passed - SS.ss, MM:SS.ss, HH:MM:SS.
      *
-     * @since 1.1
      * @param elapsedTime time in milliseconds which has to be formatted
      * @return formatted time in String form
+     * @since 1.1
      */
-    protected static String getFormattedTime(long elapsedTime) {
+    static String getFormattedTime(long elapsedTime) {
         final StringBuilder displayTime = new StringBuilder();
 
         int milliseconds = (int) ((elapsedTime % 1000) / 10);
@@ -104,8 +106,8 @@ public class Stopwatch {
     /**
      * Returns true if the stopwatch has started
      *
-     * @since 1.0
      * @return true if the stopwatch has been started by calling start(). False otherwise
+     * @since 1.0
      */
     public boolean isStarted() {
         return started;
@@ -158,6 +160,7 @@ public class Stopwatch {
      * @return currently set clock delay in milliseconds (default: 100ms)
      * @since 1.0
      */
+    @SuppressWarnings("unused")
     public long getClockDelay() {
         return clockDelay;
     }
@@ -308,8 +311,8 @@ public class Stopwatch {
     /**
      * Updates the time in elapsed and lap time and then updates the current time.
      *
-     * @since 1.1
      * @param time Current time in millis. Passing any other value may result in odd behaviour
+     * @since 1.1
      */
     private void updateElapsed(long time) {
         elapsedTime += time - current;
@@ -320,6 +323,7 @@ public class Stopwatch {
 
     /**
      * The main thread responsible for updating and displaying the time
+     *
      * @since 1.1
      */
     private void run() {
@@ -328,7 +332,7 @@ public class Stopwatch {
             return;
         }
         updateElapsed(System.currentTimeMillis());
-        handler.postDelayed(runnable,clockDelay);
+        handler.postDelayed(runnable, clockDelay);
 
         if (logEnabled)
             Log.d("STOPWATCH", elapsedTime / 1000 + " seconds, " + elapsedTime % 1000 + " milliseconds");
@@ -341,4 +345,21 @@ public class Stopwatch {
             textView.setText(displayTime);
         }
     }
+
+    /**
+     * Interface to listen for stopwatch tick events every time clock is updated. Useful for scenarios where you want to do more than update a textField based on time.
+     * Created by Yashovardhan99 on 10/12/18 as a part of TimeIt.
+     *
+     * @author Yashovardhan Dhanania
+     * @version 1.0
+     */
+    public interface OnTickListener {
+        /**
+         * Called every time the clock 'ticks'. The stopwatch ticks after a delay of 100ms (or as specified).
+         *
+         * @param stopwatch Reference to the currently calling stopwatch.
+         */
+        void onTick(Stopwatch stopwatch);
+    }
+
 }

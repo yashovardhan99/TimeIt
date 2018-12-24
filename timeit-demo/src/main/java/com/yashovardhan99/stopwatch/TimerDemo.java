@@ -17,14 +17,14 @@
 package com.yashovardhan99.stopwatch;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 
 import com.yashovardhan99.timeit.Timer;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class TimerDemo extends AppCompatActivity {
+public class TimerDemo extends AppCompatActivity implements Timer.OnTickListener {
 
     Timer timer;
 
@@ -33,7 +33,8 @@ public class TimerDemo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timer_demo);
         timer = new Timer(2 * 60 * 1000); //setting demo timer for 2 minutes
-        timer.setTextView((TextView) findViewById(R.id.time));
+        timer.setTextView(findViewById(R.id.time));
+        timer.setOnTickListener(this);
     }
 
     public void onClick(View view) {
@@ -43,17 +44,27 @@ public class TimerDemo extends AppCompatActivity {
                     timer.start();
                 break;
             case R.id.stop:
-                if(timer.isStarted())
+                if (timer.isStarted())
                     timer.stop();
                 break;
             case R.id.pause:
-                if(!timer.isPaused())
+                if (!timer.isPaused() && timer.isStarted())
                     timer.pause();
                 break;
             case R.id.resume:
-                if(timer.isPaused())
+                if (timer.isPaused())
                     timer.resume();
                 break;
         }
+    }
+
+    @Override
+    public void onTick(Timer timer) {
+        Log.d("TIMER", String.valueOf(timer.getRemainingTime()));
+    }
+
+    @Override
+    public void onComplete(Timer timer) {
+        Log.d("TIMER", "FINISHED");
     }
 }
