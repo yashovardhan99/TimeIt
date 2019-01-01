@@ -16,6 +16,7 @@
 
 package com.yashovardhan99.timeit;
 
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -37,6 +38,7 @@ public class Timer {
     private TextView textView;
     private Stopwatch stopwatch;
     private Timer.OnTickListener onTickListener;
+    private boolean debugMode;
 
     /**
      * The default constructor used to create an instance of Timer. Duration is set to a default value of 0 which should be changed before calling start.
@@ -52,6 +54,7 @@ public class Timer {
         duration = 0;
         stopwatch.setOnTickListener(this::onTick);
         onTickListener = null;
+        debugMode = false;
     }
 
 
@@ -128,6 +131,23 @@ public class Timer {
         this.duration = duration;
     }
 
+    /** Returns true if debug mode is enabled
+     * @return the current boolean status of debug mode
+     * @since 1.2
+     */
+    @SuppressWarnings("unused")
+    public boolean isDebugMode() {
+        return debugMode;
+    }
+
+    /** Set debug mode to print debug log messages in the logcat
+     * @param debugMode the boolean status to set the debug mode
+     */
+    @SuppressWarnings("unused")
+    public void setDebugMode(boolean debugMode) {
+        this.debugMode = debugMode;
+    }
+
     /**
      * Used to set the textView which is auto-updated every clock tick.
      *
@@ -193,11 +213,17 @@ public class Timer {
     }
 
     private void onTick(Stopwatch stopwatch) {
+
+        if(debugMode)
+            Log.d("TIMER","Elapsed : "+stopwatch.getElapsedTime()+"; Remaining : "+(duration-stopwatch.getElapsedTime()));
+
         if (onTickListener != null)
             onTickListener.onTick(this);
+
         if (stopwatch.getElapsedTime() >= duration) {
             textView.setText(Stopwatch.getFormattedTime(0));
             stopwatch.stop();
+
             if (onTickListener != null)
                 onTickListener.onComplete(this);
         } else
