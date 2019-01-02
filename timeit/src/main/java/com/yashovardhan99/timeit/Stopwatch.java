@@ -35,7 +35,7 @@ import androidx.annotation.Nullable;
  * Created by Yashovardhan99 on 8/12/18 as a part of TimeIt.
  *
  * @author Yashovardhan Dhanania
- * @version 1.1
+ * @version 1.1.1
  * @see java.lang.Runnable
  */
 public class Stopwatch {
@@ -93,7 +93,7 @@ public class Stopwatch {
             displayTime.append(f.format(seconds)).append('.').append(f.format(milliseconds));
 
         else if (hours == 0)
-            displayTime.append(f.format(minutes)).append(":").append(f.format(seconds)).append(f.format(milliseconds));
+            displayTime.append(f.format(minutes)).append(":").append(f.format(seconds)).append(".").append(f.format(milliseconds));
 
         else
             displayTime.append(hours).append(":").append(f.format(minutes)).append(":").append(f.format(seconds));
