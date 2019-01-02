@@ -24,12 +24,12 @@ ext {
     libraryName = 'TimeIt'
     artifact = 'timeit'
 
-    libraryDescription = 'A simple and easy stopwatch library for android'
+    libraryDescription = 'A simple and easy stopwatch and timer library for android'
 
     siteUrl = 'https://yashovardhan99.github.io/TimeIt'
     gitUrl = 'https://github.com/yashovardhan99/TimeIt.git'
-
-    libraryVersion = '1.1.1'
+    
+    libraryVersion = '1.2.0'
 
     developerId = 'yashovardhan99'
     developerName = 'Yashovardhan Dhanania'
@@ -48,8 +48,9 @@ android {
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 1001001
-        versionName "1.1.1"
+        
+        versionCode 1002000
+        versionName "1.2.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -73,8 +74,8 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.0.2'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.1-beta01'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1-beta01'
+    androidTestImplementation 'androidx.test:runner:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 }
 
 apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
