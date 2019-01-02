@@ -29,7 +29,7 @@ ext {
     siteUrl = 'https://yashovardhan99.github.io/TimeIt'
     gitUrl = 'https://github.com/yashovardhan99/TimeIt.git'
 
-    libraryVersion = '1.1.0'
+    libraryVersion = '1.1.1'
 
     developerId = 'yashovardhan99'
     developerName = 'Yashovardhan Dhanania'
@@ -48,8 +48,8 @@ android {
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        versionCode 1001001
+        versionName "1.1.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 

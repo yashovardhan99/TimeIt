@@ -35,7 +35,7 @@ import androidx.annotation.Nullable;
  * Created by Yashovardhan99 on 8/12/18 as a part of TimeIt.
  *
  * @author Yashovardhan Dhanania
- * @version 1.1
+ * @version 1.1.1
  * @see java.lang.Runnable
  */
 public class Stopwatch {
