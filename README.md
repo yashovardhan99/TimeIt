@@ -1,14 +1,17 @@
 # TimeIt
+**Now with Timer support!**
 
 [![](https://jitpack.io/v/yashovardhan99/TimeIt.svg)](https://jitpack.io/#yashovardhan99/TimeIt)
 [ ![Download](https://api.bintray.com/packages/yashovardhan99/TimeIt/TimeIt/images/download.svg) ](https://bintray.com/yashovardhan99/TimeIt/TimeIt/_latestVersion)
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-TimeIt-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/7369)
 
-A simple and easy to use stopwatch library for android
+A simple and easy to use stopwatch and timer library for android
 ## Introduction
 A stopwatch can be a very important widget in an app and yet creating it has been very difficult. Creating a stopwatch requires you to create a separate thread to keep track of the time and then post the updates on the UI thread. This process becomes complicated very quickly. Especially if you plan on adding features like pause and split.
 
-With TimeIt, you can create a stopwatch app with very few lines of code!
+Similarly, a timer is another important addon an app may need without going through all the hassle of running threads or handlers. 
+
+With TimeIt, you can create a stopwatch or a timer app with very few lines of code!
 
 For example, to create and start a stopwatch and display it with a textView :
 
@@ -21,7 +24,18 @@ Pausing a stopwatch and resuming it is as simple as calling `stopwatch.pause();`
 
 TimeIt also allows you to keep track of splits with the stopwatch by simply calling `stopwatch.split();`
 
+Similarly, to set a timer:
+```
+Timer timer = new Timer(time_in_ms);
+timer.setTextView(myTextView);
+timer.start();
+```
+The timer provides utility functions to check the current time and current status (running, paused, stopped etc.). Please check the current status of the timer before actually starting/pausing/resuming the timer.
+
+The Timer class provides an `OnTickListener` interface which you can register to, to listen for updates every clock cycle and receive a callback when the timer completes.
+
 ## Features
+* **NEW** : Create Timers with pause and resume support!
 * Easy to use stopwatch library
 * No need to use separate threads. Multithreading is handled by the library itself
 * Supports pause/resume and split methods.
@@ -50,7 +64,7 @@ Step 1. Add the JCenter repository to your root build.gradle at the end of repos
 Step 2 : Add the dependency in your app level build.gradle
 
 ```gradle
-implementation 'com.yashovardhan99.timeit:timeit:1.1.0'
+implementation 'com.yashovardhan99.timeit:timeit:1.2.0'
 ```
 
 ### Jitpack
@@ -66,7 +80,7 @@ Step 1. Add the JitPack repository to your root build.gradle at the end of repos
 Step 2 : Add the dependency in your app level build.gradle
 ```gradle
 	dependencies {
-	        implementation 'com.github.yashovardhan99:TimeIt:1.1.0'
+	        implementation 'com.github.yashovardhan99:TimeIt:1.2.0'
 	}
 ```
 ### Bintray
@@ -83,7 +97,7 @@ repositories {
 Step 2 : Add the dependency in your app level build.gradle
 
 ```gradle
-implementation 'com.yashovardhan99.timeit:timeit:1.1.0'
+implementation 'com.yashovardhan99.timeit:timeit:1.2.0'
 ```
 
 
