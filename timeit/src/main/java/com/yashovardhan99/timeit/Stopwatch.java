@@ -290,6 +290,18 @@ public class Stopwatch {
         }
     }
 
+    public void setbase(String ab) {
+        if (!paused)
+            throw new IllegalStateException("Not Paused");
+        else if (!started)
+            throw new IllegalStateException("Not Started");
+        else {
+            paused = false;
+            current = ab
+            handler.post(runnable);
+        }
+    }
+
     /**
      * Creates a new split/lap at the current time. Can even be called when stopwatch is paused.
      *
