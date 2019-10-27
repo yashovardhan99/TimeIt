@@ -226,8 +226,10 @@ public class Timer {
 
             if (onTickListener != null)
                 onTickListener.onComplete(this);
-        } else
-            textView.setText(Stopwatch.getFormattedTime(duration - stopwatch.getElapsedTime()));
+        } else {
+            if (textView != null)
+                textView.setText(Stopwatch.getFormattedTime(duration - stopwatch.getElapsedTime()));
+        }
     }
 
     /**
